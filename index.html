@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="qr-result-container">
+        <h2 style="font-size: 20px; text-align: left;">
+            <img id="qr-code-image" src="./image/qr-code.png" alt="QR Code">
+            Your QR Code Content:
+        </h2>
+        <p id="qr-content"></p>
+    </div>
+    
+    <h1 style="display: flex; justify-content: center;">Scan QR Code</h1>
+    <div style="display: flex; justify-content: center;">
+        <div id="my-qr-reader" style="width: 500px;"></div>
+    </div>
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script>
+        function domReady(fn){
+            if(document.readyState === "complete" || document.readyState === "interactive"){
+                setTimeout(fn, 1)
+            }
+            else{
+                document.addEventListener("DOMContentLoaded", fn)
+            }
+        }
+        
+        domReady(function(){
+            var qrResultContainer = document.getElementById('qr-result-container');
+            var qrContent = document.getElementById('qr-content');
+            var lastResults, countResults = 0;
+
+            function onScanSuccess(decodeText, decodeResult){
+                if(decodeText !== lastResults){
+                    ++countResults;
+                    lastResults = decodeText;
+
+                    // Display the QR code content in the container
+                    qrContent.textContent = decodeText;
+                    qrResultContainer.style.display = 'block';
+
+                    // Optionally, you can add more styling or actions here
+                }
+            }
+
+            var htmlscanner = new Html5QrcodeScanner(
+                "my-qr-reader", {fps: 10, qrbox: 250}
+            );
+
+            htmlscanner.render(onScanSuccess);
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
