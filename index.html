@@ -8,17 +8,18 @@
 </head>
 <body>
 
-    <div id="qr-result-container">
-        <h2 style="font-size: 20px; text-align: left;">
-            <img id="qr-code-image" src="./image/qr-code.png" alt="QR Code">
-            Your QR Code Content:
-        </h2>
-        <p id="qr-content"></p>
-    </div>
-    
     <h1 style="display: flex; justify-content: center;">Scan QR Code</h1>
     <div style="display: flex; justify-content: center;">
         <div id="my-qr-reader" style="width: 500px;"></div>
+    </div>
+
+    <div id="qr-result-container" style="display: none;">
+        <img src="/image/qr-code.png" id="qr-code-image" alt="">
+        <h2 style="font-size: 20px; text-align: left;">
+            Your QR Code Content:
+        </h2>
+        <p id="qr-content" class="qr-content"></p>
+        <div class="buttonContainer"><button id="copy-button">Copy</button></div>
     </div>
 
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -31,10 +32,11 @@
                 document.addEventListener("DOMContentLoaded", fn)
             }
         }
-        
+
         domReady(function(){
             var qrResultContainer = document.getElementById('qr-result-container');
             var qrContent = document.getElementById('qr-content');
+            var copyButton = document.getElementById('copy-button');
             var lastResults, countResults = 0;
 
             function onScanSuccess(decodeText, decodeResult){
@@ -46,12 +48,27 @@
                     qrContent.textContent = decodeText;
                     qrResultContainer.style.display = 'block';
 
+                    // Show the copy button
+                    copyButton.style.display = 'block';
+
                     // Optionally, you can add more styling or actions here
                 }
             }
 
+            copyButton.addEventListener('click', function() {
+                // Copy the text to the clipboard
+                var textToCopy = qrContent.textContent;
+                var tempInput = document.createElement('input');
+                tempInput.value = textToCopy;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                alert('Text copied to clipboard: ' + textToCopy);
+            });
+
             var htmlscanner = new Html5QrcodeScanner(
-                "my-qr-reader", {fps: 10, qrbox: 250}
+                "my-qr-reader", {fps: 10, qrbox: 250, play: true}
             );
 
             htmlscanner.render(onScanSuccess);
@@ -59,8 +76,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
